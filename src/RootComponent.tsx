@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import SignupPage from './pages/SignupPage'
+import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import { ROUTES } from './resources/routes-constants'
 import './styles/main.sass'
@@ -19,6 +20,7 @@ const RootComponent: React.FC = () => {
                         <Route path="*" element={<NotFoundPage />} />
                         <Route path={ROUTES.HOMEPAGE_ROUTE} element={<HomePage />} />
                         <Route path={ROUTES.SIGNUP_ROUTE} element={<SignupPage />} />
+                        <Route path={ROUTES.LOGIN_ROUTE} element={<LoginPage />} />
                     </Routes>
                 </Container>
             </Router>
