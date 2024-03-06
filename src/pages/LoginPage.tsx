@@ -1,5 +1,6 @@
 import React, { useState }  from 'react'
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Container } from 'react-bootstrap';
+import { ROUTES } from '../resources/routes-constants';
 
 const LoginPage: React.FC = () => {
   //eslint-disable-next-line
@@ -7,8 +8,7 @@ const LoginPage: React.FC = () => {
 
   const [info, setLoginInfo] = useState<{[key: string]: string}>({
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [validated, setValidated] = useState(false);
 
@@ -38,31 +38,37 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control 
-          required
-          type="email" 
-          name="email"
-          placeholder="Enter email" 
-          onChange={handleInputChange}
-        />
-      </Form.Group>
+    <Container>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control 
+            required
+            type="email" 
+            name="email"
+            placeholder="Enter email" 
+            onChange={handleInputChange}
+          />
+        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control 
-          type="password" 
-          placeholder="Password" 
-          name="Password"
-          onChange={handleInputChange}
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control 
+            type="password" 
+            placeholder="Password" 
+            name="Password"
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
+      <Button className='bottom-btn' variant='outline-primary' href={ROUTES.SIGNUP_ROUTE}>
+        Not a member? Sign up!
       </Button>
-    </Form>
+
+    </Container>
   )
 }
 

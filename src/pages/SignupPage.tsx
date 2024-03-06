@@ -1,11 +1,18 @@
 import React, { useState }  from 'react'
-import { Button, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { Button, Container, Form } from 'react-bootstrap';
+import { registerUser } from '../store/actions/thunkActions';
+import { useAppDispatch } from '../store/reducers/store';
+import { SignupData } from '../types/auth';
+import { ROUTES } from '../resources/routes-constants';
 
 const SignupPage: React.FC = () => {
   //eslint-disable-next-line
   const re = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch()
 
-  const [info, setSignupInfo] = useState<{[key: string]: string}>({
+  const [info, setSignupInfo] = useState<SignupData>({
     email: '',
     password: '',
     confirmPassword: ''
@@ -47,19 +54,28 @@ const SignupPage: React.FC = () => {
     setSignupInfo({ ...info, [name]: value });
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false || validateEmail(info.email) === false) {
       event.stopPropagation();
     } else {
       setValidated(true);
-      // ADD CALL TO API
+      const response = await dispatch(registerUser(info))
+      console.log(response)
+      if(response.type === "auth/registerUser/fulfilled") {
+        navigate(`/`);
+        window.alert('Account Created!');
+      } else {
+        console.log("Error")
+        // setError(message)
+      }
     }
 
   };
 
   return (
+    <Container>
     <Form noValidate validated={validated} onSubmit={handleSubmit} autoComplete='off'>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
@@ -116,6 +132,11 @@ const SignupPage: React.FC = () => {
         Submit
       </Button>
     </Form>
+    <Button className='bottom-btn' variant='outline-primary' href={ROUTES.LOGIN_ROUTE}>
+      Already a member? Sign in!
+    </Button>
+
+    </Container>
   )
 }
 
