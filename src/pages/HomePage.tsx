@@ -2,25 +2,23 @@ import React, { useEffect } from 'react'
 import DateDisplay from '../components/DateDisplay'
 import { useAppSelector, useAppDispatch } from '../store/reducers/store'
 import { getData } from '../store/actions/thunkActions'
+import { Container } from 'react-bootstrap'
 
 const HomePage: React.FC = () => {
-    const data = useAppSelector((state) => state)
-    console.log(data)
-    
-    // const dispatch = useAppDispatch()
-    // const loadData = async () => {
-    //     dispatch(getData());
-    // };
+    const authData = useAppSelector((state) => state.auth)
+    const dispatch = useAppDispatch()
 
-    // useEffect(() => {
-    //     loadData()
-    // }, [dispatch])
+    useEffect(() => {
+        if(authData.loggedIn){
+            dispatch(getData());
+        }
+    }, [dispatch, authData])
 
     return (
-        <div style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <h1 style={{ fontSize: '4em' }}>Home Page</h1>
+        <Container>
+            <h1 style={{ fontSize: '4em', textAlign: 'center' }}>Home Page</h1>
             <DateDisplay />
-        </div>
+        </Container>
     )
 }
 

@@ -1,21 +1,20 @@
 import React, { useState }  from 'react'
-import { Button, Form, Container } from 'react-bootstrap';
+import { Button, Form, Container, Alert } from 'react-bootstrap';
 import { ROUTES } from '../resources/routes-constants';
+import { useAppDispatch, useAppSelector } from '../store/reducers/store';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../store/actions/thunkActions';
 
 const LoginPage: React.FC = () => {
-  //eslint-disable-next-line
-  const re = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch()
+  const loginError = useAppSelector((state) => state.errors.loginError)
 
   const [info, setLoginInfo] = useState<{[key: string]: string}>({
     email: '',
     password: ''
   });
   const [validated, setValidated] = useState(false);
-
-  function validateEmail(email: string) {
-    const emailTest = String(email).toLowerCase().match(re);
-    return !!emailTest
-  }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target;
@@ -25,17 +24,18 @@ const LoginPage: React.FC = () => {
     setLoginInfo({ ...info, [name]: value });
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (form.checkValidity() === false || validateEmail(info.email) === false) {
+    if (form.checkValidity() === false) {
       event.stopPropagation();
     } else {
       setValidated(true);
-      // ADD CALL TO API
-    }
-
-  };
+      const response = await dispatch(loginUser(info))
+      if(response.type === "auth/loginUser/fulfilled") {
+        navigate(`/`);
+      }
+    }};
 
   return (
     <Container>
@@ -56,10 +56,13 @@ const LoginPage: React.FC = () => {
           <Form.Control 
             type="password" 
             placeholder="Password" 
-            name="Password"
+            name="password"
             onChange={handleInputChange}
           />
         </Form.Group>
+        <Alert show={loginError.length > 0} variant="danger">
+          {loginError}
+        </Alert>
         <Button variant="primary" type="submit">
           Submit
         </Button>

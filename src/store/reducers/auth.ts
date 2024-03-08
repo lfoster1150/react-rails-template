@@ -3,23 +3,25 @@ import { setAuth, noAuth, setToken } from '../actions/auth'
 
 interface DataReducer {
     token: string,
+    lastLoginTime: number,
     authChecked: boolean,
     loggedIn: boolean,
     currentUser: {
         id: number,
         email: string,
-        createdAt: Date
+        createdAt: string
     }
 }
 
 const initialState: DataReducer = {
     token: "",
+    lastLoginTime: 0,
     authChecked: false,
     loggedIn: false,
     currentUser: {
         id: 0,
         email: '',
-        createdAt: new Date(2000, 1, 1),
+        createdAt: new Date(2000, 1, 1).toDateString(),
     }
 }
 
@@ -41,6 +43,7 @@ const dataReducer = createReducer<DataReducer>(initialState, (builder) => {
         state.currentUser = initialState.currentUser
     })
     builder.addCase(setToken, (state, action) => {
+        state.lastLoginTime = new Date(Date.now()).getTime();
         state.token = action.payload
     })
 })

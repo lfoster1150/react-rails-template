@@ -1,8 +1,8 @@
 import React, { useState }  from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Button, Container, Form } from 'react-bootstrap';
+import { Button, Container, Form, Alert } from 'react-bootstrap';
 import { registerUser } from '../store/actions/thunkActions';
-import { useAppDispatch } from '../store/reducers/store';
+import { useAppDispatch, useAppSelector } from '../store/reducers/store';
 import { SignupData } from '../types/auth';
 import { ROUTES } from '../resources/routes-constants';
 
@@ -11,6 +11,7 @@ const SignupPage: React.FC = () => {
   const re = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
   const navigate = useNavigate();
   const dispatch = useAppDispatch()
+  const signupError = useAppSelector((state) => state.errors.signupError)
 
   const [info, setSignupInfo] = useState<SignupData>({
     email: '',
@@ -128,6 +129,9 @@ const SignupPage: React.FC = () => {
           Passwords must match!
         </Form.Control.Feedback>
       </Form.Group>
+      <Alert show={signupError.length > 0} variant="danger">
+        {signupError}
+      </Alert>
       <Button variant="primary" type="submit">
         Submit
       </Button>

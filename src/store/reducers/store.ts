@@ -3,18 +3,20 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage' // defaults to localStorage
 import data from './data'
 import auth from './auth'
+import errors from './errors'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 const rootReducer = combineReducers({
     data,
-    auth
+    auth,
+    errors
 })
 
 const persistedReducer = persistReducer(
     {
         key: 'root',
         storage,
-        whitelist: ['data', "auth"]
+        whitelist:["auth"]
     },
     rootReducer
 )
