@@ -20,6 +20,9 @@ const TopNav: React.FC = () => {
             <Navbar.Brand className='ms-auto' as={NavLink} to={ROUTES.HOMEPAGE_ROUTE}>Photo-App</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+                <Nav.Link as={NavLink} to={ROUTES.PROTECTED_ROUTE}>Protected</Nav.Link>
+            </Nav>
             { authData.loggedIn ? (
                 <Nav className="ms-auto">
                     <NavDropdown title={authData.currentUser.email} id="basic-nav-dropdown">

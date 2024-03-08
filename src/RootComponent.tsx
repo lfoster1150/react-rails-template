@@ -9,8 +9,12 @@ import './styles/main.sass'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TopNav from './components/TopNav'
 import { Container } from 'react-bootstrap';
+import ProtectedPage from './pages/ProtectedPage'
+import ProtectedRoute from './components/ProtectedRoute'
+import { useAppSelector } from './store/reducers/store'
 
 const RootComponent: React.FC = () => {
+    const loggedIn = useAppSelector((state) => state.auth.loggedIn)
     return (
         <div>
             <Router>
@@ -21,6 +25,14 @@ const RootComponent: React.FC = () => {
                         <Route path={ROUTES.HOMEPAGE_ROUTE} element={<HomePage />} />
                         <Route path={ROUTES.SIGNUP_ROUTE} element={<SignupPage />} />
                         <Route path={ROUTES.LOGIN_ROUTE} element={<LoginPage />} />
+                        <Route 
+                            path={ROUTES.PROTECTED_ROUTE} 
+                            element={
+                                <ProtectedRoute loggedIn={loggedIn} >
+                                    <ProtectedPage />
+                                </ProtectedRoute>
+                            } 
+                        />
                     </Routes>
                 </Container>
             </Router>
