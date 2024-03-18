@@ -3,7 +3,7 @@
 This is a React App front-end template originally created with the [complete-web-app](https://www.npmjs.com/package/cra-template-complete-web-app) cra-template.
 \
 \
-It is meant to be used with a Rails API. A template for that can be found [here]().
+It is meant to be used with a Rails API. A template for that can be found [here](https://github.com/lfoster1150/react-rails-api-template).
 
 <br />
 
@@ -22,8 +22,9 @@ yarn install
 touch .env.local
 ```
 Add the following line in `.env.local` to reference API: 
->REACT_APP_API_URL=http://localhost:3001
-
+```yml
+REACT_APP_API_URL=http://localhost:3001
+```
 
 ### Start Server
 
