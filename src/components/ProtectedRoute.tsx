@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 
 const ProtectedRoute: React.FC<{loggedIn: boolean, children?: React.ReactNode}> = (props: {loggedIn: boolean, children?: ReactNode}) => {
   if (!props.loggedIn) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ fromProtected: true }}  />;
   }
 
   return props.children;

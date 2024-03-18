@@ -1,14 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { setLoginError, setSignupError } from '../actions/errors'
+import { setLoginError, setSignupError, setResetError, setRequestResetError } from '../actions/errors'
 
 interface DataReducer {
     loginError: string,
-    signupError: string
+    signupError: string,
+    resetError: string,
+    requestResetError: string
 }
 
 const initialState: DataReducer = {
     loginError: "",
-    signupError: ""
+    signupError: "",
+    resetError: "",
+    requestResetError: ""
 }
 
 const dataReducer = createReducer<DataReducer>(initialState, (builder) => {
@@ -17,6 +21,12 @@ const dataReducer = createReducer<DataReducer>(initialState, (builder) => {
     })
     builder.addCase(setSignupError, (state, action) => {
         state.signupError = action.payload
+    })
+    builder.addCase(setResetError, (state, action) => {
+        state.resetError = action.payload
+    })
+    builder.addCase(setRequestResetError, (state, action) => {
+        state.requestResetError = action.payload
     })
 })
 

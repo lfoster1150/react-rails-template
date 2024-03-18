@@ -15,30 +15,30 @@ const TopNav: React.FC = () => {
     }
 
     return (
-    <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
-        <Container>
-            <Navbar.Brand className='ms-auto' as={NavLink} to={ROUTES.HOMEPAGE_ROUTE}>Photo-App</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-                <Nav.Link as={NavLink} to={ROUTES.PROTECTED_ROUTE}>Protected</Nav.Link>
-            </Nav>
-            { authData.loggedIn ? (
-                <Nav className="ms-auto">
-                    <NavDropdown title={authData.currentUser.email} id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#action">Account</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                    </NavDropdown>
+        <Navbar expand="sm" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
+            <Container>
+                <Navbar.Brand  className='ml-auto' as={NavLink} to={ROUTES.HOMEPAGE_ROUTE}>App-Name</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="me-auto">
+                    <Nav.Link as={NavLink} to={ROUTES.PROTECTED_ROUTE}>Protected</Nav.Link>
                 </Nav>
-            ) : (
-                <Nav className="ms-auto">
-                    <Nav.Link as={NavLink} to={ROUTES.LOGIN_ROUTE}>Login</Nav.Link>
-                </Nav>
-            )}
-            </Navbar.Collapse>
-        </Container>
-    </Navbar>
+                { authData.loggedIn ? (
+                    <Nav className="ms-auto">
+                        <NavDropdown title={authData.currentUser.email} id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#action">Account</NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                ) : (
+                    <Nav className="ms-auto">
+                        <Nav.Link as={NavLink} to={ROUTES.LOGIN_ROUTE}>Login</Nav.Link>
+                    </Nav>
+                )}
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     )
 }
 

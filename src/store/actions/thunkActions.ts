@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { AppDispatch, RootState } from '../reducers/store'
 import { setContents } from './data'
 import { setToken, setAuth, noAuth } from './auth'
-import { setLoginError, setSignupError } from './errors'
+import { setLoginError, setSignupError, setResetError, setRequestResetError } from './errors'
 import { SignupData } from '../../types/auth'
 import API from '../../resources/api'
 import axios, { AxiosResponse , AxiosError } from 'axios'
@@ -72,6 +72,7 @@ export const loginUser = createAsyncThunk<void, {[key: string]: string}, { dispa
         dispatch(noAuth())
         const error = e as Error | AxiosError;
         if (axios.isAxiosError(error))  {
+            console.error(error)
             dispatch(setLoginError(error.response?.data.status.message))
             throw error
         } else {
@@ -105,6 +106,7 @@ export const registerUser = createAsyncThunk<void, SignupData, { dispatch: AppDi
         dispatch(noAuth())
         const error = e as Error | AxiosError;
         if (axios.isAxiosError(error))  {
+            console.error(error)
             dispatch(setSignupError(error.response?.data.status.message))
             throw error
         } else {
@@ -140,5 +142,62 @@ export const signOutUser = createAsyncThunk<void, void, { dispatch: AppDispatch 
                 dispatch(noAuth())
         }} 
         throw error
+    }
+})
+
+export const resetPassword = createAsyncThunk<void, {[key: string]: string}, { dispatch: AppDispatch }>('auth/resetPassword', async (data, thunkApi): Promise<void> => {
+    const url = "/auth/password"
+    const dispatch = thunkApi.dispatch as AppDispatch
+
+    const userData = {
+        user: {
+        reset_password_token: data.token,
+        password: data.password,
+        password_confirmation: data.confirmPassword
+    }}
+
+    const options = {
+        headers: {
+            "content-type": "application/json",
+    }}
+
+    try {
+        await API.put(url, userData, options)
+    } catch (e) {
+        const error = e as Error | AxiosError;
+        if (axios.isAxiosError(error))  {
+            console.error(error)
+            dispatch(setResetError("Unable to update password. Please folow the link below to restart the process."))
+            throw error
+        } else {
+            console.error(e)
+            throw e
+        }
+    }
+})
+
+export const requestResetPassword = createAsyncThunk<void, string, { dispatch: AppDispatch }>('auth/requestResetError', async (email, thunkApi): Promise<void> => {
+    const url = "/auth/password"
+    const dispatch = thunkApi.dispatch as AppDispatch
+
+    const userData = { user: { email: email }}
+
+    const options = {
+        headers: {
+            "content-type": "application/json",
+    }}
+
+    try {
+        await API.post(url, userData, options)
+    } catch (e) {
+        const error = e as Error | AxiosError;
+        if (axios.isAxiosError(error))  {
+            console.error(error)
+            dispatch(setRequestResetError(error.response?.data.status.message))
+            throw error
+        } else {
+            console.error(e)
+            throw e
+        }
     }
 })

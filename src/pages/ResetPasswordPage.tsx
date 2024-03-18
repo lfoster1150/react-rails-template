@@ -1,36 +1,28 @@
-import React, { useState }  from 'react'
-import { useNavigate } from 'react-router-dom';
-import { Button, Container, Form, Alert, Row, Col } from 'react-bootstrap';
-import { registerUser } from '../store/actions/thunkActions';
+import React, { useState, useEffect }  from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Button, Container, Form, Alert, Row, Col, Nav } from 'react-bootstrap';
+import { resetPassword } from '../store/actions/thunkActions';
 import { useAppDispatch, useAppSelector } from '../store/reducers/store';
-import { SignupData } from '../types/auth';
-import { ROUTES } from '../resources/routes-constants';
 
-const SignupPage: React.FC = () => {
-  //eslint-disable-next-line
-  const re = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+const ResetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch()
-  const signupError = useAppSelector((state) => state.errors.signupError)
+  const resetError = useAppSelector((state) => state.errors.resetError)
+  const [queryParameters] = useSearchParams()
 
-  const [info, setSignupInfo] = useState<SignupData>({
-    email: '',
+  const [info, setResetInfo] = useState<{[key: string]: string}>({
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    token: ''
   });
 
   const [focus, setFocus] = useState<{[key: string]: boolean}>({
-    email: false,
     password: false,
     confirmPassword: false
   });
 
   const [validated, setValidated] = useState(false);
 
-  function validateEmail(email: string) {
-    const emailTest = String(email).toLowerCase().match(re);
-    return !!emailTest
-  }
 
   function validatePassword(type: string) {
     if (type === 'confirm') {
@@ -52,52 +44,38 @@ const SignupPage: React.FC = () => {
     const value = target.value;
 
     toggleFocus(name)
-    setSignupInfo({ ...info, [name]: value });
+    setResetInfo({ ...info, [name]: value });
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (form.checkValidity() === false || validateEmail(info.email) === false) {
+    if (form.checkValidity() === false) {
       event.stopPropagation();
     } else {
       setValidated(true);
-      const response = await dispatch(registerUser(info))
-      console.log(response)
-      if(response.type === "auth/registerUser/fulfilled") {
-        navigate(`/`);
-        window.alert('Account Created!');
+      const response = await dispatch(resetPassword(info))
+      if(response.type === "auth/resetPassword/fulfilled") {
+        navigate(`/login`);
       } else {
         console.log("Error")
-        // setError(message)
       }
     }
 
   };
+
+  useEffect(() => {
+    if(queryParameters && info.token.length === 0) {
+      const readToken = queryParameters.get('reset_password_token') || ""
+      setResetInfo({...info, token: readToken})
+    }  
+  }, [queryParameters])
 
   return (
     <Container>
       <Row className="justify-content-center">
         <Col style={{maxWidth: "400px"}}>
           <Form noValidate validated={validated} onSubmit={handleSubmit} autoComplete='off'>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control 
-                required
-                type="email" 
-                name="email"
-                placeholder="Enter email" 
-                onChange={handleInputChange}
-                isValid={focus.email && validateEmail(info.email)}
-                isInvalid={focus.email && !validateEmail(info.email)}
-                autoComplete="new-password"
-              />
-              <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid email
-              </Form.Control.Feedback>
-            </Form.Group>
-
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control 
@@ -131,21 +109,22 @@ const SignupPage: React.FC = () => {
                 Passwords must match!
               </Form.Control.Feedback>
             </Form.Group>
-            <Alert show={signupError.length > 0} variant="danger">
-              {signupError}
+            <Alert show={resetError.length > 0} variant="danger">
+              {resetError}
             </Alert>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
+            <div className="d-grid gap-2">
+              <Button variant="primary" type="submit">
+                Reset Password
+              </Button>
+            </div>
+            <Nav className='bottom-btn justify-content-center' >
+              <Nav.Link href='/reset'>Request New Email</Nav.Link>
+            </Nav>
           </Form>
-        <Button className='bottom-btn' variant='outline-primary' href={ROUTES.LOGIN_ROUTE}>
-          Already a member? Sign in!
-        </Button>
         </Col>
       </Row>
-
     </Container>
   )
 }
 
-export default SignupPage
+export default ResetPasswordPage
